@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import ExportButtons from "@/components/ExportButtons";
 import { Loading, Shell } from "@/components/Shell";
 import { btnDanger, btnGhost, btnPrimary, card } from "@/components/ui";
 import { api, ApiError } from "@/lib/api";
@@ -159,9 +160,9 @@ export default function EventDetailPage() {
       </section>
 
       <section className={`${card} mt-4`}>
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+        <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
           Daftar hadir ({rows.length})
-        </h2>
+        </h2><ExportButtons eventId={id} disabled={rows.length === 0} /></div>
         {rows.length === 0 ? (
           <p className="mt-3 text-sm text-slate-500">Belum ada yang absen.</p>
         ) : (
