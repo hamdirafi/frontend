@@ -9,7 +9,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { api, User } from "./api";
+import { api, ApiError, User } from "./api";
 
 type AuthState = {
   user: User | null;
@@ -43,6 +43,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Sesi habis di tengah pemakaian -> kosongkan status login (halaman terlindungi akan ke /login)
+  useEffect(() => {
+    const onUnauthenticated = () => setUser(null);
+    window.addEventListener("auth:unauthenticated", onUnauthenticated);
+    return () => window.removeEventListener("auth:unauthenticated", onUnauthenticated);
+  }, []);
+
   const login = useCallback(async (email: string, password: string) => {
     const res = await api<{ data: User }>("/login", {
       method: "POST",
@@ -53,8 +60,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await api("/logout", { method: "POST" });
-    setUser(null);
+    try {
+      await api("/logout", { method: "POST" });
+    } catch (e) {
+      // 401/419 = sesi memang sudah berakhir, artinya tujuan logout sudah tercapai
+      if (!(e instanceof ApiError && (e.status === 401 || e.status === 419))) {
+        throw e;
+      }
+    } finally {
+      setUser(null);
+    }
   }, []);
 
   const value = useMemo(

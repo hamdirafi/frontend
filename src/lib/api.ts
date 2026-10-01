@@ -75,6 +75,11 @@ export async function api<T>(path: string, options: Options = {}): Promise<T> {
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
+    // Sesi berakhir di tengah pemakaian: beri tahu AuthProvider agar status login dikosongkan
+    if (res.status === 401 && typeof window !== "undefined" && path !== "/login" && path !== "/me") {
+      window.dispatchEvent(new Event("auth:unauthenticated"));
+    }
+
     throw new ApiError(
       res.status,
       data?.message ?? "Terjadi kesalahan pada server.",

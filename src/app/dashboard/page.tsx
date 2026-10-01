@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Role } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+
+type MenuItem = { label: string; href?: string };
 
 const ROLE_LABEL: Record<Role, string> = {
   admin: "Admin",
@@ -11,10 +14,22 @@ const ROLE_LABEL: Record<Role, string> = {
   peserta: "Peserta",
 };
 
-const ROLE_MENU: Record<Role, string[]> = {
-  admin: ["Kelola akun", "Semua kegiatan", "Rekap kehadiran"],
-  panitia: ["Kegiatan saya", "Tampilkan QR", "Rekap kehadiran"],
-  peserta: ["Scan QR absen", "Riwayat kehadiran"],
+const ROLE_MENU: Record<Role, MenuItem[]> = {
+  admin: [
+    { label: "Semua kegiatan", href: "/events" },
+    { label: "Buat kegiatan", href: "/events/new" },
+    { label: "Scan QR absen", href: "/scan" },
+    { label: "Kelola akun" },
+  ],
+  panitia: [
+    { label: "Kegiatan saya", href: "/events" },
+    { label: "Buat kegiatan", href: "/events/new" },
+    { label: "Scan QR absen", href: "/scan" },
+  ],
+  peserta: [
+    { label: "Scan QR absen", href: "/scan" },
+    { label: "Riwayat kehadiran" },
+  ],
 };
 
 export default function DashboardPage() {
@@ -64,12 +79,19 @@ export default function DashboardPage() {
         </h2>
         <ul className="mt-3 grid gap-3 sm:grid-cols-2">
           {ROLE_MENU[user.role].map((item) => (
-            <li
-              key={item}
-              className="rounded-xl bg-white p-4 text-sm shadow-sm ring-1 ring-slate-200"
-            >
-              {item}
-              <span className="ml-2 text-xs text-slate-400">(segera)</span>
+            <li key={item.label}>
+              {item.href ? (
+                <Link
+                  href={item.href}
+                  className="block rounded-xl bg-white p-4 text-sm font-medium shadow-sm ring-1 ring-slate-200 transition hover:ring-indigo-400"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <div className="rounded-xl bg-white p-4 text-sm text-slate-400 shadow-sm ring-1 ring-slate-200">
+                  {item.label} <span className="text-xs">(segera)</span>
+                </div>
+              )}
             </li>
           ))}
         </ul>
