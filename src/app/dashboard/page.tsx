@@ -19,7 +19,7 @@ const ROLE_MENU: Record<Role, MenuItem[]> = {
     { label: "Semua kegiatan", href: "/events" },
     { label: "Buat kegiatan", href: "/events/new" },
     { label: "Scan QR absen", href: "/scan" },
-    { label: "Kelola akun" },
+    { label: "Kelola akun", href: "/admin/users" },
   ],
   panitia: [
     { label: "Kegiatan saya", href: "/events" },
@@ -28,7 +28,7 @@ const ROLE_MENU: Record<Role, MenuItem[]> = {
   ],
   peserta: [
     { label: "Scan QR absen", href: "/scan" },
-    { label: "Riwayat kehadiran" },
+    { label: "Riwayat kehadiran", href: "/history" },
   ],
 };
 
