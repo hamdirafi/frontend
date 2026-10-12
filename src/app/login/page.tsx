@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -93,6 +94,11 @@ export default function LoginPage() {
             {submitting ? "Memproses..." : "Masuk"}
           </button>
         </form>
+
+        <p className="mt-4 text-center text-sm text-slate-500">
+          Belum punya akun?{" "}
+          <Link href="/register" className="font-semibold text-indigo-600 hover:underline">Daftar</Link>
+        </p>
       </div>
     </main>
   );
